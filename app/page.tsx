@@ -1,29 +1,34 @@
 import { client } from "@/lib/sanity"
+import { PortableText } from "@portabletext/react"
 
-async function getData() {
+async function getHomePage() {
   try {
-    const query = `*[_type == "page" && slug.current == "home"][0]`
+    const query = `*[_type == "page" && slug.current == "home"][0] {
+      title,
+      description,
+      content
+    }`
     return await client.fetch(query)
   } catch (error) {
-    console.error("Error fetching data from Sanity:", error)
-    // Return fallback data if fetch fails
+    console.error("Błąd podczas pobierania strony głównej z Sanity:", error)
     return {
-      title: "Welcome to My Website",
-      description: "This content will be editable in Sanity CMS once connected",
+      title: "Witaj na mojej stronie",
+      description: "Ta treść będzie edytowalna w Sanity CMS po utworzeniu dokumentu",
     }
   }
 }
 
 export default async function Home() {
-  const data = await getData()
+  const page = await getHomePage()
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
-        <h1 className="text-4xl font-bold mb-4">{data?.title || "Welcome to My Website"}</h1>
-        <p className="text-xl">{data?.description || "This content is editable in Sanity CMS"}</p>
+    <div className="container mx-auto py-12 px-4">
+      <h1 className="text-4xl font-bold mb-6">{page?.title}</h1>
+      <div className="prose max-w-none">
+        {page?.description && <p className="text-xl mb-6">{page.description}</p>}
+        {page?.content && <PortableText value={page.content} />}
       </div>
-    </main>
+    </div>
   )
 }
 

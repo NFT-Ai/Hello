@@ -2,15 +2,15 @@ import { defineConfig } from "sanity"
 import { deskTool } from "sanity/desk"
 import { visionTool } from "@sanity/vision"
 
-// Define the schema directly in the config file
+// Schemat strony z dodatkowym polem showInMenu
 const pageSchema = {
   name: "page",
-  title: "Page",
+  title: "Strona",
   type: "document",
   fields: [
     {
       name: "title",
-      title: "Title",
+      title: "Tytuł",
       type: "string",
       validation: (Rule) => Rule.required(),
     },
@@ -26,14 +26,28 @@ const pageSchema = {
     },
     {
       name: "description",
-      title: "Description",
+      title: "Opis",
       type: "text",
     },
     {
       name: "content",
-      title: "Content",
+      title: "Treść",
       type: "array",
       of: [{ type: "block" }],
+    },
+    {
+      name: "showInMenu",
+      title: "Pokaż w menu",
+      type: "boolean",
+      description: "Zaznacz, jeśli strona ma być widoczna w menu",
+      initialValue: false,
+    },
+    {
+      name: "menuOrder",
+      title: "Kolejność w menu",
+      type: "number",
+      description: "Niższa liczba = wyższa pozycja w menu",
+      hidden: ({ document }) => !document?.showInMenu,
     },
   ],
 }
@@ -45,13 +59,12 @@ export default defineConfig({
   projectId: "aldx01rl",
   dataset: "production",
 
-  // Make sure deskTool is properly configured
   plugins: [
     deskTool({
       structure: (S) =>
         S.list()
-          .title("Content")
-          .items([S.listItem().title("Pages").child(S.documentTypeList("page"))]),
+          .title("Treść")
+          .items([S.listItem().title("Strony").child(S.documentTypeList("page"))]),
     }),
     visionTool(),
   ],
@@ -60,7 +73,6 @@ export default defineConfig({
     types: [pageSchema],
   },
 
-  // Add basePath if you're using a custom studio path
   basePath: "/studio",
 })
 

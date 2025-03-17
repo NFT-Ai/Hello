@@ -1,20 +1,24 @@
-import type { Metadata } from 'next'
-import './globals.css'
+import type React from "react"
+import "./globals.css"
+import SiteHeader from "@/components/site-header"
 
-export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
-  generator: 'v0.dev',
+export const metadata = {
+  title: "Moja Strona",
+  description: "Strona stworzona z Next.js i Sanity",
 }
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="pl">
+      <body className="min-h-screen flex flex-col">
+        <SiteHeader />
+        <main className="flex-1">{children}</main>
+      </body>
     </html>
   )
 }
+
