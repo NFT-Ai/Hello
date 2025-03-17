@@ -2,7 +2,7 @@ import { defineConfig } from "sanity"
 import { deskTool } from "sanity/desk"
 import { visionTool } from "@sanity/vision"
 
-// Define the schema directly in the config file to ensure it's loaded
+// Define the schema directly in the config file
 const pageSchema = {
   name: "page",
   title: "Page",
@@ -45,10 +45,22 @@ export default defineConfig({
   projectId: "aldx01rl",
   dataset: "production",
 
-  plugins: [deskTool(), visionTool()],
+  // Make sure deskTool is properly configured
+  plugins: [
+    deskTool({
+      structure: (S) =>
+        S.list()
+          .title("Content")
+          .items([S.listItem().title("Pages").child(S.documentTypeList("page"))]),
+    }),
+    visionTool(),
+  ],
 
   schema: {
     types: [pageSchema],
   },
+
+  // Add basePath if you're using a custom studio path
+  basePath: "/studio",
 })
 
